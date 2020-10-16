@@ -1,3 +1,6 @@
 # covid_api
 API call to retreive data from covid tracking project to track active cases
-Lets see if i remember how to do this
+
+Uses the api in https://github.com/ishaberry/Covid19Canada as an API source
+
+https://opencovid.ca/
