@@ -3,15 +3,22 @@ Generates API call to covid project to try and parse out active cases in canada
 """
 import requests
 import json
+import pandas
+import csv
+
 
 
 def main():
     """
     Entrypoint into program.
     """
+    web_data= call_api()
 
-    call_api()
+    save_data(web_data)
 
+"""
+    parse_data(web_data)
+"""
 
 def call_api():
     """
@@ -24,8 +31,24 @@ def call_api():
     response = requests.get(f'{api_url}{api_argument}')
     web_data = response.json()  # returns a list of dicts
     print(type(web_data))
-    print(web_data)
+    return (web_data)
 
+def parse_data():
+    pass
+
+def save_data(web_data):
+    with open('cases.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames = {} )
+        writer.writeheader()
+        writer.writerows(web_data)
+
+"""
+code i stole
+with open('Names.csv', 'w') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=field_names)
+    writer.writeheader()
+    writer.writerows(cars)
+ """
 
 if __name__ == '__main__':
     main()
