@@ -4,16 +4,17 @@ Generates API call to covid project to try and parse out active cases in canada
 import requests
 import pandas as pd
 import csv
-
+import openpyxl
 
 
 def main():
     """
     Entrypoint into program.
     """
-    web_data= call_api()
+    response = {}
+    web_data = call_api()
 
-    pandas_parse(web_data)
+    pandas_parse(response)
 
 #    save_csv(web_data)
 
@@ -44,12 +45,18 @@ def save_csv(web_data):
         writer.writeheader()
         writer.writerows(web_data)
 
-def pandas_parse(response):
-    cases = pd.read_json(response)
-    "df.to_csv(index=False)"
+def pandas_parse(web_data):
+    cases = pd.DataFrame.from_dict(web_data, orient='index')
+    cases.transpose()
+    cases.to_excel('cases.xlsx')
+    cases.to_csv('cases.csv')
+
 
 """
 code i stole
+
+df = pd.DataFrame.from_dict(d, orient='index')
+
 with open('Names.csv', 'w') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=field_names)
     writer.writeheader()
