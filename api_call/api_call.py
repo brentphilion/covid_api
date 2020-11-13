@@ -4,23 +4,17 @@ Generates API call to covid project to try and parse out active cases in canada
 import requests
 import pandas as pd
 import csv
-import openpyxl
 
 
 def main():
     """
     Entrypoint into program.
     """
-    response = {}
     web_data = call_api()
 
-    pandas_parse(response)
+    pandas_parse(web_data)
 
 #    save_csv(web_data)
-
-"""
-    parse_data(web_data)
-"""
 
 def call_api():
     """
@@ -33,7 +27,7 @@ def call_api():
     response = requests.get(f'{api_url}{api_argument}')
     web_data = response.json()  # returns a list of dicts
 
-    return (web_data, response)
+    return (web_data)
 
 def parse_data():
     pass
@@ -46,11 +40,11 @@ def save_csv(web_data):
         writer.writerows(web_data)
 
 def pandas_parse(web_data):
-    cases = pd.DataFrame.from_dict(web_data, orient='index')
-    cases.transpose()
+    cases = pd.json_normalize(web_data, max_level=3)
+    print(pd.DataFrame.sample(10))
+    #json_normalize(data, max_level=1)(web_data, orient='index')
     cases.to_excel('cases.xlsx')
     cases.to_csv('cases.csv')
-
 
 """
 code i stole
