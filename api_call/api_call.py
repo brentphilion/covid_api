@@ -2,6 +2,7 @@
 Generates API call to covid project to try and parse out active cases in canada
 """
 import requests
+import wget
 import pandas as pd
 import csv
 
@@ -10,9 +11,9 @@ def main():
     """
     Entrypoint into program.
     """
-    web_data = call_api()
-
-    pandas_parse(web_data)
+#    web_data = call_api()  Rebasing code using Johns hopkins
+    web_data = get_from_jhu()
+    pandas_parse()
 
 #    save_csv(web_data)
 
@@ -29,8 +30,23 @@ def call_api():
 
     return (web_data)
 
+def get_from_jhu():
+    """
+    Pull data form Johns hopkins using wget instead
+
+    """# url of the raw csv dataset
+    urls = [
+        'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
+        'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
+        'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
+        ]
+    [wget.download(url) for url in urls]
+
+    return ()
 def parse_data():
     pass
+
+
 
 def save_csv(web_data):
     csv_fields = {'row_id','date_reported','age_group','gender','province','case_status','health_region'}
@@ -39,12 +55,15 @@ def save_csv(web_data):
         writer.writeheader()
         writer.writerows(web_data)
 
-def pandas_parse(web_data):
-    cases = pd.json_normalize(web_data, max_level=3)
-    print(pd.DataFrame.sample(10))
-    #json_normalize(data, max_level=1)(web_data, orient='index')
-    cases.to_excel('cases.xlsx')
-    cases.to_csv('cases.csv')
+def pandas_parse():
+    confirmed_df = pd.read_csv('time_series_covid19_confirmed_global.csv')
+    deaths_df = pd.read_csv('time_series_covid19_deaths_global.csv')
+    recovered_df = pd.read_csv('time_series_covid19_recovered_global.csv')
+    print(confirmed_df.head())
+    print(deaths_df.head())
+    print(recovered_df.head())
+
+
 
 """
 code i stole
